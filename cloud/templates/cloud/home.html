@@ -1,0 +1,22 @@
+{% extends "users/base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="table-responsive col-auto" style="padding-bottom: 1rem;">
+        <div class="card">
+            <div class="card-header text-center">
+                Home
+            </div>
+
+            <div class="text-center">
+                {% if user.is_authenticated %}
+                <h1>Hi {{ name }}, Welcome to Cloud Based File Sharing System</h1>
+                {% else %}
+                <h1>Welcome to Cloud Based File Sharing System</h1>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

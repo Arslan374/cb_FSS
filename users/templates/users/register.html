@@ -1,0 +1,19 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% block title %}Registration Form{% endblock %}
+{% block content %}
+<div class="content-section">
+    <form enctype="multipart/form-data" method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Registration Form</legend>
+            {{ u_form|crispy }}
+            {{ p_form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn  btn-dark" type="submit">Register</button>
+        </div>
+    </form>
+</div>
+{% endblock content %}
