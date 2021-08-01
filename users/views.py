@@ -14,6 +14,8 @@ def register(request):
             u_form.save()
             username = u_form.cleaned_data.get('username')
             user = User.objects.get(username=username)
+            if not request.user.is_superuser:
+                user.is_active = False
             user.save()
             p_form = ProfileRegisterForm(request.POST,
                                          request.FILES,
