@@ -4,11 +4,15 @@ from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
 
 from .models import Profile
+from cloud.models import Folder
 
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:
+        folder = Folder.objects.create(
+            user=instance, name='___', path=f'./{instance.pk}')
+        folder.save()
         Profile.objects.create(user=instance)
 
 
