@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
     'cloud.apps.CloudConfig',
-    'crispy_forms'
+    'crispy_forms',
+    'private_storage'
 ]
 
 MIDDLEWARE = [
@@ -125,6 +126,8 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = BASE_DIR.joinpath('media')
 MEDIA_URL = '/media/'
 
+PRIVATE_STORAGE_ROOT = BASE_DIR.joinpath('private-media/')
+PRIVATE_STORAGE_AUTH_FUNCTION = 'private_storage.permissions.allow_staff'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

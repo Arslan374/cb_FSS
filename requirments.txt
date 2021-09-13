@@ -3,3 +3,4 @@ Django
 pytz
 sqlparse
 django-crispy-forms
+django-private-storage

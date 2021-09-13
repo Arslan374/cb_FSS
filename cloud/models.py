@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
+from private_storage.fields import PrivateFileField
 # Create your models here.
 
 
@@ -39,8 +40,7 @@ class File(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     folder = models.ForeignKey(Folder, on_delete=models.CASCADE)
     date = models.DateField(default=timezone.now)
-    file = models.FileField(
-        default='.tmp',
+    file = PrivateFileField(
         upload_to=file_path,
         verbose_name="Upload File",
     )
