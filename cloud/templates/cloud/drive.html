@@ -1,33 +1,99 @@
-{% extends "users/base.html" %} {% block title %}Home{% endblock %} {% block content %}
+{% extends "users/base.html" %} {% block title %}Drive{% endblock %} {% block content %} {% load static %}
 
 <div class="container-fluid">
     <div class="table-responsive col-auto" style="padding-bottom: 1rem;">
         <div class="card">
             <div class="card-header text-center">
-                Home
+                Drive
             </div>
-            <inline>
-                {% for i,b in bread %}
-                {% if i != n_bread %}
-                <b> <a href="{% url 'drive' %}?id={{b.id}}">{{b.name}}</a>  >> </b>
-                {% else %}
-                <b> <a href="{% url 'drive' %}?id={{b.id}}">{{b.name}}</a> </b>
-                {% endif %}
+
+            <div class="d-flex justify-content-between">
+                
+
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        {% for i,b in bread %}
+                        {% if i == 0 %}
+                        <li class="breadcrumb-item"><a href="{% url 'drive' %}?id={{b.id}}"><i class="fas fa-home"></i>
+                        </a></li>
+                        {% elif i == n_bread %}
+                        <li class="breadcrumb-item active" aria-current="page">{{b.name}}</li>
+                        
+                        {% else %}
+                        <li class="breadcrumb-item"><a href="{% url 'drive' %}?id={{b.id}}">{{b.name}}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                    </ol>
+                </nav>
+
+                <div class="d-flex flex-row-reverse">
+
+                    <div class="p-2">
+                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#CreateFolderModal">Create Folder</button>
+                    </div>
+
+                    <div class="p-2">
+                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#UploadFileModal">Upload File</button>
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- file folder div  -->
+            <div class="d-flex p-4">
+                {% if not empty %}
+                <!-- Folder Card -->
+                {% for d in folders %}
+                <div class="card m-2" style="width: 10rem;">
+
+                    <img class="card-img-top m-auto p-1" src="{% static '/img/folder.png' %}" alt="Folder Icon" style="width: 6rem;">
+                    <div class="card-body d-flex justify-content-between">
+                        <a href="{% url 'drive' %}?id={{d.id}}"">
+                            <h5 class="card-title">{{d.name}}</h5>
+                        </a>
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-light" data-toggle="dropdown"> <i class="fas fa-ellipsis-v"></i> </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#">Rename</a>
+                                <a class="dropdown-item" href="#">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {% endfor %}
-            </inline>
-            <b>---------------------------------------</b>
-            {% if empty %}
-            <p> Directory is empty.</p>
-            {% else %}
 
-            {% for d in folders %}
-            <p> <a href="{% url 'drive' %}?id={{d.id}}"> {{d.name}}</a></p> <br />
-            {% endfor %}
+                <!-- File Card -->
+                {% for f in files %}
+                <div class="card m-2" style="width: 10rem;">
 
-            {% for f in files %}
-            <p><a href="{% url 'file' f.pk %}" download> {{f.filename}} </a></p><br />
-            {% endfor %}
-            {% endif %}
+                    <img class="card-img-top m-auto p-1" src="{% static '/img/file.png' %}" alt="File Icon" style="width: 6rem;">
+                    <div class="card-body d-flex justify-content-around">
+                        <h5 class="card-title">{{f.filename}}</h5>
+
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-light" data-toggle="dropdown"> <i class="fas fa-ellipsis-v"></i> </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="{% url 'file' f.pk %}" download>Download</a>
+                                <a class="dropdown-item" href="#">Share</a>
+                                <a class="dropdown-item" href="#">Rename</a>
+                                <a class="dropdown-item" href="#">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% else %}
+                
+                <!-- Folder Empty msg -->
+                <h1 class="display-4 text-muted text-center m-auto">This folder is empty.</h1>
+                {% endif %}
+            </div>
+
+
+
+
+        </div>
 
         </div>
     </div>
