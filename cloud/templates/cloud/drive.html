@@ -6,8 +6,18 @@
             <div class="card-header text-center">
                 Home
             </div>
+            <inline>
+                {% for i,b in bread %}
+                {% if i != n_bread %}
+                <b> <a href="{% url 'drive' %}?id={{b.id}}">{{b.name}}</a>  >> </b>
+                {% else %}
+                <b> <a href="{% url 'drive' %}?id={{b.id}}">{{b.name}}</a> </b>
+                {% endif %}
+                {% endfor %}
+            </inline>
+            <b>---------------------------------------</b>
             {% if empty %}
-                <p> Directory is empty.</p>
+            <p> Directory is empty.</p>
             {% else %}
 
             {% for d in folders %}

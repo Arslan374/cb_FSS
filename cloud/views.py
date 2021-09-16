@@ -1,5 +1,6 @@
 import os
 from users import views
+from django.forms.models import model_to_dict
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -24,12 +25,13 @@ def drive(request):
     folder_id = int(request.GET.get('id', 0))
 
     current_folder = Folder.objects.filter(user=request.user, id=folder_id)
-
+    top_dir = Folder.objects.get(user=request.user, depth=0)
     if current_folder.exists():
         current_folder = current_folder.first()
     else:
-        current_folder = Folder.objects.get(user=request.user, depth=0)
-
+        current_folder = top_dir
+    top_dir = model_to_dict(top_dir)
+    top_dir['name'] = "Home"
     files = File.objects.filter(user=request.user, folder=current_folder)
     folders = Folder.objects.filter(
         user=request.user,
@@ -44,9 +46,28 @@ def drive(request):
     if files.exists():
         for f in files:
             files_list.append(f)
-
+    bread = []
+    if current_folder.depth > 0:
+        bread.append(current_folder)
+        path = current_folder.path.split('/')
+        depth = current_folder.depth
+        while depth != 1:
+            path.pop()
+            depth -= 1
+            folder = Folder.objects.filter(
+                user=request.user,
+                depth=depth,
+                path='/'.join(path)
+            ).first()
+            bread.append(model_to_dict(folder))
+        bread.reverse()
+    bread.append(top_dir)
+    bread.reverse()
+    bread = [i for i in enumerate(bread)]
     context['folders'] = folders_list
     context['files'] = files_list
+    context['bread'] = bread
+    context['n_bread'] = len(bread)-1
     context['empty'] = (len(folders_list) == 0) and (len(files_list) == 0)
     return render(request, 'cloud/drive.html', context)
 
