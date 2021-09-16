@@ -1,5 +1,7 @@
 import os
+import shutil
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import User
 
@@ -10,7 +12,6 @@ from private_storage.fields import PrivateFileField
 def file_path(self, filename):
     path = 'user_files'
     path = os.path.join(path, self.folder.path)
-    path = os.path.join(path, str(self.folder.pk))
     path = os.path.join(path, filename)
     return path
 
@@ -28,6 +29,17 @@ class Folder(models.Model):
         max_length=500,
         default='0'
     )
+
+    def delete(self, *args, **kwargs):
+        path = os.path.join(
+            settings.PRIVATE_STORAGE_ROOT,
+            'user_files',
+            self.path
+        )
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+
+        super(Folder, self).delete(*args, **kwargs)
 
     def __str__(self) -> str:
         return f'{self.user.pk}_{self.name}'

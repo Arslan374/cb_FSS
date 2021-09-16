@@ -1,4 +1,5 @@
 import os
+import time
 from users import views
 from django.contrib import messages
 from django.forms.models import model_to_dict
@@ -76,23 +77,63 @@ def drive(request):
 @login_required
 def file_upload(request):
     r_id = 0
-    if request.method == 'POST' and request.FILES['user-file']:
-        f = request.FILES['user-file']
+    try:
+        if request.method == 'POST' and request.FILES['user-file']:
+            f = request.FILES['user-file']
+            folder_id = int(request.POST.get('folder-id'))
+            folder = Folder.objects.filter(user=request.user, id=folder_id)
+            if folder.exists():
+                folder = folder.first()
+                r_id = folder_id
+                new_file = File.objects.create(
+                    user=request.user,
+                    folder=folder,
+                    file=f
+                )
+                new_file.save()
+                messages.success(
+                    request, f"File [{os.path.basename(new_file.file.path)}] uploaded successfully!")
+    except:
         folder_id = int(request.POST.get('folder-id'))
         folder = Folder.objects.filter(user=request.user, id=folder_id)
         if folder.exists():
             folder = folder.first()
             r_id = folder_id
-            new_file = File.objects.create(
-                user=request.user,
-                folder=folder,
-                file=f
-            )
-            new_file.save()
-            messages.success(
-                request, f"File [{os.path.basename(new_file.file.path)}] uploaded successfully!")
 
     return redirect(f'/drive/?id={r_id}')
+
+
+@login_required
+def folder_create(request):
+    r_id = 0
+    try:
+        if request.method == 'POST':
+            folder_id = int(request.POST.get('folder-id'))
+            folder_name = request.POST.get('folder-name')
+            folder = Folder.objects.filter(user=request.user, id=folder_id)
+            if folder.exists():
+                folder = folder.first()
+                r_id = folder_id
+                if folder_name.strip() != '':
+                    new_folder = Folder.objects.create(
+                        user=request.user,
+                        name=folder_name,
+                        depth=folder.depth+1,
+                        path=f'{folder.path}/{int(time.time())}'
+                    )
+                    new_folder.save()
+                    messages.success(
+                        request, f"Folder [{new_folder.name}] created successfully!")
+    except Exception as e:
+        print(e)
+        folder_id = int(request.POST.get('folder-id'))
+        folder = Folder.objects.filter(user=request.user, id=folder_id)
+        if folder.exists():
+            folder = folder.first()
+            r_id = folder_id
+
+    return redirect(f'/drive/?id={r_id}')
+
 
 @login_required
 def file_delete(request):
@@ -107,6 +148,25 @@ def file_delete(request):
             f.delete()
             messages.success(
                 request, f"File [{name}] deleted successfully!")
+
+    return redirect(f'/drive/?id={r_id}')
+
+
+@login_required
+def folder_delete(request):
+    r_id = 0
+    if request.method == 'GET':
+        folder = int(request.GET.get('folder'))
+        r_id = int(request.GET.get('folder-id'))
+        folder = Folder.objects.filter(user=request.user, id=folder)
+        if folder.exists():
+            folder = folder.first()
+            name = folder.name
+            for d in Folder.objects.filter(user=request.user, path__startswith=folder.path):
+                d.delete()
+            folder.delete()
+            messages.success(
+                request, f"Folder [{name}] deleted successfully!")
 
     return redirect(f'/drive/?id={r_id}')
 

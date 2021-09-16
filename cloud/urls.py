@@ -5,6 +5,8 @@ from .views import (
     drive,
     file_upload,
     file_delete,
+    folder_create,
+    folder_delete,
     DownloadFile
 )
 
@@ -13,5 +15,8 @@ urlpatterns = [
     path('drive/', drive, name='drive'),
     path('file/upload/', file_upload, name='file_upload'),
     path('file/delete/', file_delete, name='file_delete'),
+
+    path('folder/create/', folder_create, name='folder_create'),
+    path('folder/delete/', folder_delete, name='folder_delete'),
     path('file/dowload/<int:pk>/', DownloadFile.as_view(), name='file')
 ]
