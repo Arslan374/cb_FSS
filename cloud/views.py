@@ -16,9 +16,11 @@ from .models import File, Folder, ShareFile
 
 @login_required
 def home(request):
-    context = {}
-    context['name'] = request.user.get_full_name()
-    return render(request, 'cloud/home.html', context)
+    if request.user.is_superuser:
+        context = {}
+        context['name'] = request.user.get_full_name()
+        return render(request, 'cloud/home.html', context)
+    return redirect('/drive/')
 
 
 @login_required
