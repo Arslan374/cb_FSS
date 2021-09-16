@@ -1,5 +1,6 @@
 import os
 from users import views
+from django.contrib import messages
 from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -88,9 +89,24 @@ def file_upload(request):
                 file=f
             )
             new_file.save()
-            print(f"Save: ")
-        else:
-            print("no folder")
+            messages.success(
+                request, f"File [{os.path.basename(new_file.file.path)}] uploaded successfully!")
+
+    return redirect(f'/drive/?id={r_id}')
+
+@login_required
+def file_delete(request):
+    r_id = 0
+    if request.method == 'GET':
+        file_id = int(request.GET.get('file-id'))
+        r_id = int(request.GET.get('folder-id'))
+        f = File.objects.filter(user=request.user, id=file_id)
+        if f.exists():
+            f = f.first()
+            name = os.path.basename(f.file.path)
+            f.delete()
+            messages.success(
+                request, f"File [{name}] deleted successfully!")
 
     return redirect(f'/drive/?id={r_id}')
 

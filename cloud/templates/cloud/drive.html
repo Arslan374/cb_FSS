@@ -1,5 +1,6 @@
 {% extends "users/base.html" %} {% block title %}Drive{% endblock %} {% block content %} {% load static %}
 
+
 <div class="container-fluid">
     <div class="table-responsive col-auto" style="padding-bottom: 1rem;">
         <div class="card">
@@ -48,13 +49,14 @@
                 {% for d in folders %}
                 <div class="card m-2 text-center" style="width: 10rem;">
                     <div class="card-img-top m-auto p-1">
-                    <a href="{% url 'drive' %}?id={{d.id}}">
-                        <img class="" src="{% static '/img/folder.png' %}" alt="Folder Icon"
-                            style="width: 6rem;">
-                    </a></div>
+                        <a href="{% url 'drive' %}?id={{d.id}}">
+                            <img class="" src="{% static '/img/folder.png' %}" alt="Folder Icon" style="width: 6rem;">
+                        </a>
+                    </div>
                     <div class="card-body d-flex justify-content-between">
                         <a href="{% url 'drive' %}?id={{d.id}}">
-                            <h5 class=" card-title text-truncate" data-toggle="tooltip" title="{{d.name}}">{{d.name}}</h5>
+                            <h5 class=" card-title text-truncate" data-toggle="tooltip" title="{{d.name}}">{{d.name}}
+                            </h5>
                         </a>
                         <div class="dropdown">
                             <button type="button" class="btn btn-light" data-toggle="dropdown"> <i
@@ -75,7 +77,8 @@
                     <img class="card-img-top m-auto p-1" src="{% static '/img/file.png' %}" alt="File Icon"
                         style="width: 6rem;">
                     <div class="card-body d-flex justify-content-around">
-                        <h5 class="card-title text-truncate" data-toggle="tooltip" title="{{f.filename}}">{{f.filename}}</h5>
+                        <h5 class="card-title text-truncate" data-toggle="tooltip" title="{{f.filename}}">{{f.filename}}
+                        </h5>
 
                         <div class="dropdown">
                             <button type="button" class="btn btn-light" data-toggle="dropdown"> <i
@@ -84,7 +87,9 @@
                                 <a class="dropdown-item" href="{% url 'file' f.pk %}" download>Download</a>
                                 <a class="dropdown-item" href="#">Share</a>
                                 <a class="dropdown-item" href="#">Rename</a>
-                                <a class="dropdown-item" href="#">Delete</a>
+                                <a class="dropdown-item" href="#"
+                                    data-href="{% url 'file_delete' %}?file-id={{f.id}}&folder-id={{current_folder.id}}"
+                                    data-toggle="modal" data-target="#confirm-delete">Delete</a>
                             </div>
                         </div>
                     </div>
@@ -148,11 +153,11 @@
                 </button>
             </div>
             <form method="post" enctype="multipart/form-data" action="{% url 'file_upload' %}">
-            {% csrf_token %}
+                {% csrf_token %}
                 <div class="modal-body">
 
                     <div class="input-group mb-3">
-                        <input type="hidden"  name="folder-id" value="{{ current_folder.id }}">
+                        <input type="hidden" name="folder-id" value="{{ current_folder.id }}">
                         <!-- <div class="custom-file">
                             <input type="file" class="custom-file-input" id="newFile" name="user-file">
                             <label class="custom-file-label" for="newFile">Choose file</label>
@@ -170,6 +175,25 @@
     </div>
 </div>
 
+<!--- Delete Confirm Model -->
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Delete Confirmation
+            </div>
+            <div class="modal-body">
+                Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-danger" id="btn-delete-confirm">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 </div>
+
 {% endblock content %}
