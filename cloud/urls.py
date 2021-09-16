@@ -2,12 +2,12 @@
 from django.urls import path
 from .views import (
     home,
-    drive, 
+    drive,
     DownloadFile
 )
 
 urlpatterns = [
     path('', home, name='home'),
     path('drive/', drive, name='drive'),
-    path('file/<int:pk>/', DownloadFile.as_view(), name='file') 
+    path('file/<int:pk>/', DownloadFile.as_view(), name='file')
 ]
