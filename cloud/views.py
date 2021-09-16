@@ -115,15 +115,28 @@ def folder_create(request):
                 folder = folder.first()
                 r_id = folder_id
                 if folder_name.strip() != '':
-                    new_folder = Folder.objects.create(
+                    already = False
+                    others = Folder.objects.filter(
                         user=request.user,
-                        name=folder_name,
-                        depth=folder.depth+1,
-                        path=f'{folder.path}/{int(time.time())}'
+                        depth=folder.depth+1
                     )
-                    new_folder.save()
-                    messages.success(
-                        request, f"Folder [{new_folder.name}] created successfully!")
+                    for d in others:
+                        if d.name == folder_name:
+                            already = True
+                            break
+                    if not already:
+                        new_folder = Folder.objects.create(
+                            user=request.user,
+                            name=folder_name,
+                            depth=folder.depth+1,
+                            path=f'{folder.path}/{int(time.time())}'
+                        )
+                        new_folder.save()
+                        messages.success(
+                            request, f"Folder [{folder_name}] created successfully!")
+                    else:
+                        messages.error(
+                            request, f"Folder with name [{folder_name}] already exists!")
     except Exception as e:
         print(e)
         folder_id = int(request.POST.get('folder-id'))
