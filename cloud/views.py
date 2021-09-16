@@ -60,7 +60,8 @@ def drive(request):
                 path='/'.join(path)
             ).first()
             bread.append(model_to_dict(folder))
-    bread.insert(0, top_dir)
+    bread.append(top_dir)
+    bread.reverse()
     bread = [i for i in enumerate(bread)]
     context['folders'] = folders_list
     context['files'] = files_list

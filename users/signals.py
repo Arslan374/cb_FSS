@@ -11,7 +11,7 @@ from cloud.models import Folder
 def create_profile(sender, instance, created, **kwargs):
     if created:
         folder = Folder.objects.create(
-            user=instance, name='___', path=f'./{instance.pk}')
+            user=instance, name='Home',)
         folder.save()
         Profile.objects.create(user=instance)
 
