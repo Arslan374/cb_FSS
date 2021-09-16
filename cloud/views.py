@@ -1,7 +1,10 @@
+import os
 from users import views
+from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from private_storage.views import PrivateStorageDetailView
 
@@ -13,6 +16,39 @@ def home(request):
     context = {}
     context['name'] = request.user.get_full_name()
     return render(request, 'cloud/home.html', context)
+
+
+@login_required
+def drive(request):
+    context = {}
+    folder_id = int(request.GET.get('id', 0))
+
+    current_folder = Folder.objects.filter(user=request.user, id=folder_id)
+
+    if current_folder.exists():
+        current_folder = current_folder.first()
+    else:
+        current_folder = Folder.objects.get(user=request.user, depth=0)
+
+    files = File.objects.filter(user=request.user, folder=current_folder)
+    folders = Folder.objects.filter(
+        user=request.user,
+        depth=current_folder.depth+1,
+        path__startswith=current_folder.path,
+    )
+    folders_list = []
+    files_list = []
+    if folders.exists():
+        for f in folders:
+            folders_list.append(f)
+    if files.exists():
+        for f in files:
+            files_list.append(f)
+
+    context['folders'] = folders_list
+    context['files'] = files_list
+    context['empty'] = (len(folders_list) == 0) and (len(files_list) == 0)
+    return render(request, 'cloud/drive.html', context)
 
 
 class DownloadFile(PrivateStorageDetailView):

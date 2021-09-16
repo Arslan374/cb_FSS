@@ -19,13 +19,14 @@ class Folder(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField(default=timezone.now)
+    depth = models.IntegerField(default=0)
     name = models.CharField(
         max_length=500,
         default='New Folder'
     )
     path = models.CharField(
         max_length=500,
-        default='.'
+        default='0'
     )
 
     def __str__(self) -> str:
@@ -44,6 +45,9 @@ class File(models.Model):
         upload_to=file_path,
         verbose_name="Upload File",
     )
+
+    def filename(self):
+        return os.path.basename(self.file.name)
 
     def __str__(self) -> str:
         return f'{self.user.pk}_{self.file.name}'

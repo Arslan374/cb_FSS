@@ -1,0 +1,25 @@
+{% extends "users/base.html" %} {% block title %}Home{% endblock %} {% block content %}
+
+<div class="container-fluid">
+    <div class="table-responsive col-auto" style="padding-bottom: 1rem;">
+        <div class="card">
+            <div class="card-header text-center">
+                Home
+            </div>
+            {% if empty %}
+                <p> Directory is empty.</p>
+            {% else %}
+
+            {% for d in folders %}
+            <p> <a href="{% url 'drive' %}?id={{d.id}}"> {{d.name}}</a></p> <br />
+            {% endfor %}
+
+            {% for f in files %}
+            <p><a href="{% url 'file' f.pk %}" download> {{f.filename}} </a></p><br />
+            {% endfor %}
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
