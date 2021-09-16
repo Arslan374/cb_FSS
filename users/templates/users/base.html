@@ -67,6 +67,14 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
     <script>
+        $('#newFile').on('change',function(){
+                //get the file name
+                var fileName = $(this).val();
+                fileName = fileName.split("\\")
+                fileName = fileName[fileName.length -1]
+                //replace the "Choose a file" label
+                $(this).next('.custom-file-label').html(fileName);
+            })
         $('#confirm-delete').on('show.bs.modal', function (e) {
             $(this).find('#btn-delete-confirm').attr('href', $(e.relatedTarget).data('href'));
         });

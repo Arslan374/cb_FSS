@@ -49,6 +49,12 @@ class File(models.Model):
     def filename(self):
         return os.path.basename(self.file.name)
 
+    def delete(self, *args, **kwargs):
+        if os.path.isfile(self.file.path):
+            os.remove(self.file.path)
+
+        super(File, self).delete(*args, **kwargs)
+
     def __str__(self) -> str:
         return f'{self.user.pk}_{self.file.name}'
 
