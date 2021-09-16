@@ -1,7 +1,7 @@
 import os
 from users import views
 from django.forms.models import model_to_dict
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -63,12 +63,36 @@ def drive(request):
     bread.append(top_dir)
     bread.reverse()
     bread = [i for i in enumerate(bread)]
+    context['current_folder'] = current_folder
     context['folders'] = folders_list
     context['files'] = files_list
     context['bread'] = bread
     context['n_bread'] = len(bread)-1
     context['empty'] = (len(folders_list) == 0) and (len(files_list) == 0)
     return render(request, 'cloud/drive.html', context)
+
+
+@login_required
+def file_upload(request):
+    r_id = 0
+    if request.method == 'POST' and request.FILES['user-file']:
+        f = request.FILES['user-file']
+        folder_id = int(request.POST.get('folder-id'))
+        folder = Folder.objects.filter(user=request.user, id=folder_id)
+        if folder.exists():
+            folder = folder.first()
+            r_id = folder_id
+            new_file = File.objects.create(
+                user=request.user,
+                folder=folder,
+                file=f
+            )
+            new_file.save()
+            print(f"Save: ")
+        else:
+            print("no folder")
+
+    return redirect(f'/drive/?id={r_id}')
 
 
 class DownloadFile(PrivateStorageDetailView):
