@@ -49,7 +49,23 @@ def drive(request):
             folders_list.append(f)
     if files.exists():
         for f in files:
-            files_list.append(f)
+            new_f = {
+                'pk': f.pk,
+                'id': f.id,
+                'name': os.path.basename(f.file.path),
+                'size': f.file.size,
+                'type': 'file'
+            }
+            ext = new_f['name'][-4:]
+            if ext in ['.png', '.tif', 'tiff', '.jpg', 'jpeg', '.bmp']:
+                new_f['type'] = 'image'
+            elif ext in ['.gif']:
+                new_f['type'] = 'gif'
+            elif ext in ['.doc', 'docx']:
+                new_f['type'] = 'doc'
+            elif ext in ['.pdf']:
+                new_f['type'] = 'pdf'
+            files_list.append(new_f)
     bread = []
     if current_folder.depth > 0:
         bread.append(current_folder)

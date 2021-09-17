@@ -76,10 +76,23 @@
                 {% for f in files %}
                 <div class="card m-2" style="width: 10rem;">
 
-                    <img class="card-img-top m-auto p-1" src="{% static '/img/file.png' %}" alt="File Icon"
+                    <img class="card-img-top m-auto p-1" 
+                    {% if f.type == 'file' %}
+                    src="{% static '/img/file.png' %}"
+                    {% elif f.type == 'image' %}
+                    src="{% static '/img/image.png' %}"
+                    {% elif f.type == 'doc' %}
+                    src="{% static '/img/doc.png' %}"
+                    {% elif f.type == 'pdf' %}
+                    src="{% static '/img/pdf.png' %}"
+                    {% elif f.type == 'gif' %}
+                    src="{% static '/img/gif.png' %}"
+                    {% endif %}
+                    
+                     alt="File Icon"
                         style="width: 6rem;">
                     <div class="card-body d-flex justify-content-around">
-                        <h5 class="card-title text-truncate" data-toggle="tooltip" title="{{f.filename}}">{{f.filename}}
+                        <h5 class="card-title text-truncate" data-toggle="tooltip" title="{{f.name}}">{{f.name}}
                         </h5>
 
                         <div class="dropdown">
@@ -182,7 +195,7 @@
 <!--- Delete Confirm Model -->
 <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog  modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 Delete Confirmation
