@@ -202,6 +202,77 @@ def folder_delete(request):
     return redirect(f'/drive/?id={r_id}')
 
 
+@login_required
+def share_file(request):
+    r_id = 0
+    if request.method == 'GET':
+        user_email = request.GET.get('email').strip().lower()
+        file_id = int(request.GET.get('file_id'))
+        r_id = int(request.GET.get('folder-id'))
+        f = File.objects.filter(user=request.user, id=file_id)
+        user = User.objects.filter(email=user_email)
+        if f.exists() and user.exists():
+            f = f.first()
+            user = user.first()
+            name = os.path.basename(f.file.path)
+            shared = ShareFile(
+                owner=request.user,
+                viewer=user,
+                file=f
+            )
+            shared.save()
+            messages.success(
+                request, f"File [{name}] shared to {user.get_full_name} successfully!")
+
+    return redirect(f'/drive/?id={r_id}')
+
+@login_required
+def share_remove(request):
+    if request.method == 'GET':
+        file_id = int(request.GET.get('file_id'))
+        f = ShareFile.objects.filter(owner=request.user, id=file_id)
+        if not f.exists():
+            f = ShareFile.objects.filter(viewer=request.user, id=file_id)
+        if f.exists():
+            f = f.first()
+            name = os.path.basename(f.file.file.path)
+            f.delete()
+            messages.success(
+                request, f"Shared File [{name}] remove successfully!")
+
+    return redirect(f'/share/')
+
+@login_required
+def share_view(request):
+    context = {}
+
+    files = ShareFile.objects.filter(viewer=request.user)
+
+    files_list = []
+    if files.exists():
+        for f in files:
+            new_f = {
+                'pk': f.pk,
+                'id': f.id,
+                'owner_name': f.owner.get_full_name,
+                'name': os.path.basename(f.file.file.path),
+                'size': f.file.size,
+                'type': 'file'
+            }
+            ext = new_f['name'][-4:]
+            if ext in ['.png', '.tif', 'tiff', '.jpg', 'jpeg', '.bmp']:
+                new_f['type'] = 'image'
+            elif ext in ['.gif']:
+                new_f['type'] = 'gif'
+            elif ext in ['.doc', 'docx']:
+                new_f['type'] = 'doc'
+            elif ext in ['.pdf']:
+                new_f['type'] = 'pdf'
+            files_list.append(new_f)
+   
+    context['files'] = files_list
+    return render(request, 'cloud/share.html', context)
+
 class DownloadFile(PrivateStorageDetailView):
     model = File
     model_file_field = 'file'
