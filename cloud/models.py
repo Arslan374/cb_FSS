@@ -89,7 +89,7 @@ class ShareFile(models.Model):
     file = models.ForeignKey(File, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f'{self.owner.pk}_{self.viewer.pk}_{self.file.name}'
+        return f'{self.owner.pk}_{self.viewer.pk}_{self.file.filename()}'
 
     def __repr__(self) -> str:
         return self.__str__()

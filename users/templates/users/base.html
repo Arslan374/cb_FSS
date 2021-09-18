@@ -20,7 +20,7 @@
     <header class="site-header">
         <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
             <div class="container">
-                <a class="navbar-brand " href="{% url 'home' %}"><img src="{% static 'img/icon.png' %}" width="30px" /> Cloud Based File Sharing System</a>
+                <a class="navbar-brand " href="{% url 'home' %}" style="font-size: larger;"><img src="{% static 'img/icon.png' %}" width="25em" /> Cloud Based File Sharing System</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -29,20 +29,16 @@
                     </div>
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
-                        {% if user.is_authenticated %} 
-                            {% if user.is_superuser %}
-                            <a class="nav-item nav-link" href="/admin">Admin Panel</a>
-                            <a class="nav-item nav-link" href="{% url 'register' %}">Add New User</a> 
-                            {% endif %}
-                            <a class="nav-item nav-link" href="{% url 'drive' %}">My Drive</a>
-                            <a class="nav-item nav-link" href="{% url 'share_view' %}">Shared Files</a>
-                        
-                            <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
-                            <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a> 
-                        {% else %}
-                            <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
-                            <a class="nav-item nav-link" href="{% url 'login' %}">Login</a> 
-                        {% endif %}
+                        {% if user.is_authenticated %} {% if user.is_superuser %}
+                        <a class="nav-item nav-link" href="/admin">Admin Panel</a>
+                        <a class="nav-item nav-link" href="{% url 'register' %}">Add New User</a> {% endif %}
+                        <a class="nav-item nav-link" href="{% url 'drive' %}">My Drive</a>
+                        <a class="nav-item nav-link" href="{% url 'share_view' %}">Shared Files</a>
+
+                        <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
+                        <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a> {% else %}
+                        <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                        <a class="nav-item nav-link" href="{% url 'login' %}">Login</a> {% endif %}
                     </div>
                 </div>
             </div>
@@ -74,19 +70,19 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
     <script>
-        $('#newFile').on('change',function(){
-                //get the file name
-                var fileName = $(this).val();
-                fileName = fileName.split("\\")
-                fileName = fileName[fileName.length -1]
+        $('#newFile').on('change', function() {
+            //get the file name
+            var fileName = $(this).val();
+            fileName = fileName.split("\\")
+            fileName = fileName[fileName.length - 1]
                 //replace the "Choose a file" label
-                $(this).next('.custom-file-label').html(fileName);
-            })
-        $('#confirm-delete').on('show.bs.modal', function (e) {
+            $(this).next('.custom-file-label').html(fileName);
+        })
+        $('#confirm-delete').on('show.bs.modal', function(e) {
             $(this).find('#btn-delete-confirm').attr('href', $(e.relatedTarget).data('href'));
         });
 
-        $('#ShareFileModal').on('show.bs.modal', function (e) {
+        $('#ShareFileModal').on('show.bs.modal', function(e) {
             $(this).find('#shareFileId').attr('value', $(e.relatedTarget).data('fileid'));
         });
     </script>

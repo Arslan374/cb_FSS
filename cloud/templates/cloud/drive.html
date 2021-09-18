@@ -2,7 +2,7 @@
 
 
 <div class="container-fluid">
-    <div class="table-responsive col-auto" style="padding-bottom: 1rem;">
+    <div class="table-responsive col-auto" style="padding-bottom: 1em;">
         <div class="card">
             <div class="card-header text-center">
                 Drive
@@ -47,10 +47,10 @@
                 {% if not empty %}
                 <!-- Folder Card -->
                 {% for d in folders %}
-                <div class="card m-2 text-center" style="width: 10rem;">
+                <div class="card m-2 text-center" style="width: 10em;">
                     <div class="card-img-top m-auto p-1">
                         <a href="{% url 'drive' %}?id={{d.id}}">
-                            <img class="" src="{% static '/img/folder.png' %}" alt="Folder Icon" style="width: 6rem;">
+                            <img class="" src="{% static '/img/folder.png' %}" alt="Folder Icon" style="width: 6em;">
                         </a>
                     </div>
                     <div class="card-body d-flex justify-content-between">
@@ -62,7 +62,13 @@
                             <button type="button" class="btn btn-light" data-toggle="dropdown"> <i
                                     class="fas fa-ellipsis-v"></i> </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Rename</a>
+
+<!-- Rename Folder Link -->
+                                <a class="dropdown-item" href="#"
+                                    data-href="{% url 'folder_delete' %}?folder={{d.id}}&folder-id={{current_folder.id}}"
+                                    data-toggle="modal" data-target="#RenameModal">Rename</a>
+
+
                                 <a class="dropdown-item" href="#"
                                     data-href="{% url 'folder_delete' %}?folder={{d.id}}&folder-id={{current_folder.id}}"
                                     data-toggle="modal" data-target="#confirm-delete">Delete</a>
@@ -74,7 +80,7 @@
 
                 <!-- File Card -->
                 {% for f in files %}
-                <div class="card m-2" style="width: 10rem;">
+                <div class="card m-2" style="width: 10em;">
 
                     <img class="card-img-top m-auto p-1" 
                     {% if f.type == 'file' %}
@@ -90,7 +96,7 @@
                     {% endif %}
                     
                      alt="File Icon"
-                        style="width: 6rem;">
+                        style="width: 6em;">
                     <div class="card-body d-flex justify-content-around">
                         <h5 class="card-title text-truncate" data-toggle="tooltip" title="{{f.name}}">{{f.name}}
                         </h5>
@@ -102,8 +108,12 @@
                                 <a class="dropdown-item" href="{% url 'file' f.pk %}" download>Download</a>
                                 <a class="dropdown-item" data-fileid="{{ f.id }}"
                                  href="#" data-toggle="modal" data-target="#ShareFileModal" >Share</a>
-                                <a class="dropdown-item" href="#">Rename</a>
-                                <a class="dropdown-item" href="#"
+ <!-- Rename File Link  -->
+                                 <a class="dropdown-item" href="#" 
+                                    data-href="{% url 'folder_delete' %}?folder={{d.id}}&folder-id={{current_folder.id}}"
+                                    data-toggle="modal" data-target="#RenameModal">Rename</a>
+                               
+                                    <a class="dropdown-item" href="#"
                                     data-href="{% url 'file_delete' %}?file-id={{f.id}}&folder-id={{current_folder.id}}"
                                     data-toggle="modal" data-target="#confirm-delete">Delete</a>
                             </div>
@@ -241,6 +251,38 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <a class="btn btn-danger" id="btn-delete-confirm">Delete</a>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rename Modal -->
+<div class="modal fade" id="RenameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">RENAME </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" action="{% url 'folder_create' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <input type="hidden" name="folder-id" value="{{ current_folder.id }}">
+                        
+                        <input type="text" class="form-control" name="rename" id="newName"
+                            placeholder="New Name">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
