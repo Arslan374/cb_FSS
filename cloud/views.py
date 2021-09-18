@@ -14,11 +14,9 @@ from private_storage.views import PrivateStorageDetailView
 from .models import File, Folder, ShareFile
 
 
-@login_required
 def home(request):
-    if request.user.is_superuser:
+    if not request.user.is_authenticated:
         context = {}
-        context['name'] = request.user.get_full_name()
         return render(request, 'cloud/home.html', context)
     return redirect('/drive/')
 
@@ -211,7 +209,7 @@ def share_file(request):
         r_id = int(request.POST.get('folder-id'))
         f = File.objects.filter(user=request.user, id=file_id)
         user = User.objects.filter(email=user_email)
-        
+
         if f.exists() and user.exists():
             f = f.first()
             user = user.first()
@@ -230,6 +228,7 @@ def share_file(request):
 
     return redirect(f'/drive/?id={r_id}')
 
+
 @login_required
 def share_remove(request):
     if request.method == 'GET':
@@ -245,6 +244,7 @@ def share_remove(request):
                 request, f"Shared File [{name}] remove successfully!")
 
     return redirect(f'/share/')
+
 
 @login_required
 def share_view(request):
@@ -273,9 +273,10 @@ def share_view(request):
             elif ext in ['.pdf']:
                 new_f['type'] = 'pdf'
             files_list.append(new_f)
-   
+
     context['files'] = files_list
     return render(request, 'cloud/share.html', context)
+
 
 class DownloadFile(PrivateStorageDetailView):
     model = File
