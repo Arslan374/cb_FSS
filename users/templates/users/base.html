@@ -30,12 +30,18 @@
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
                         {% if user.is_authenticated %} {% if user.is_superuser %}
-                        <a class="nav-item nav-link" href="/admin">Admin Panel</a>
-                        <a class="nav-item nav-link" href="{% url 'register' %}">Add New User</a> {% else %}
-                        <a class="nav-item nav-link" href="{% url 'home' %}">Home</a> {% endif %}
-                        <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a> {% else %}
-                        <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
-                        <a class="nav-item nav-link" href="{% url 'login' %}">Login</a> {% endif %}
+                            <a class="nav-item nav-link" href="/admin">Admin Panel</a>
+                            <a class="nav-item nav-link" href="{% url 'register' %}">Add New User</a> 
+                        {% else %}
+                            <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
+                            <a class="nav-item nav-link" href="{% url 'drive' %}">My Drive</a>
+                            <a class="nav-item nav-link" href="{% url 'share_view' %}">Shared Files</a>
+                        {% endif %}
+                            <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a> 
+                        {% else %}
+                            <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                            <a class="nav-item nav-link" href="{% url 'login' %}">Login</a> 
+                        {% endif %}
                     </div>
                 </div>
             </div>

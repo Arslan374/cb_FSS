@@ -11,6 +11,7 @@ def sub_routine():
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     id = models.AutoField(primary_key=True)
+    gender = models.CharField(max_length=255, null=True)
     phone = models.CharField(max_length=255, null=True)
     subscription = models.DateTimeField(default=sub_routine)
 

@@ -1,0 +1,23 @@
+{% extends 'users/base.html' %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+    <div class="content-section container">
+        <form enctype="multipart/form-data" method="POST"
+              class="form-control form-control-sm ">
+            {% csrf_token %}
+
+            <legend class="border-bottom mb-4">Profile</legend>
+            {% crispy u_form %}
+            {% crispy p_form %}
+            <div class="form-group text-center">
+                <button class="btn btn-outline-primary" type="submit">Update Profile</button>
+            </div>
+            <legend class="border-bottom mb-4">Advance Options</legend>
+            <div class="form-group text-center">
+                <a href="{% url 'change-password' %}" class="btn btn-outline-danger">Change Password</a>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
