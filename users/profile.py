@@ -70,16 +70,9 @@ class ProfileUpdateForm(forms.ModelForm):
         self.helper.field_class = 'input-sm col-xs-6 md-0'
         self.helper.layout = Layout(
             Div(
-                Div('ref', css_class='col'),
-                Div(Field('account_type', css_class="text-uppercase"), css_class='col'),
                 Div('gender', css_class='col'),
                 Div('phone', css_class='col'),
-                Div('country', css_class='col'),
-                Div('city', css_class='col'),
-                Div('address', css_class='col'),
-                Div('bank_name', css_class='col'),
-                Div('bank_account_number', css_class='col'),
-                Div('image', css_class='col'),
+                Div('subscription', css_class='col'),
         )
         )
 
