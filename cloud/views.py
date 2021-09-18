@@ -205,31 +205,35 @@ def folder_delete(request):
 @login_required
 def share_file(request):
     r_id = 0
-    if request.method == 'GET':
-        user_email = request.GET.get('email').strip().lower()
-        file_id = int(request.GET.get('file_id'))
-        r_id = int(request.GET.get('folder-id'))
+    if request.method == 'POST':
+        user_email = request.POST.get('email').strip().lower()
+        file_id = int(request.POST.get('file-id'))
+        r_id = int(request.POST.get('folder-id'))
         f = File.objects.filter(user=request.user, id=file_id)
         user = User.objects.filter(email=user_email)
+        
         if f.exists() and user.exists():
             f = f.first()
             user = user.first()
-            name = os.path.basename(f.file.path)
-            shared = ShareFile(
-                owner=request.user,
-                viewer=user,
-                file=f
-            )
-            shared.save()
-            messages.success(
-                request, f"File [{name}] shared to {user.get_full_name} successfully!")
+            if user.pk != request.user.pk:
+                name = os.path.basename(f.file.path)
+                shared = ShareFile(
+                    owner=request.user,
+                    viewer=user,
+                    file=f
+                )
+                shared.save()
+                messages.success(
+                    request, f"File [{name}] shared to {user.get_full_name().title()} successfully!")
+        else:
+            messages.error(request, f"Unable to share the file!")
 
     return redirect(f'/drive/?id={r_id}')
 
 @login_required
 def share_remove(request):
     if request.method == 'GET':
-        file_id = int(request.GET.get('file_id'))
+        file_id = int(request.GET.get('file-id'))
         f = ShareFile.objects.filter(owner=request.user, id=file_id)
         if not f.exists():
             f = ShareFile.objects.filter(viewer=request.user, id=file_id)
@@ -254,9 +258,9 @@ def share_view(request):
             new_f = {
                 'pk': f.pk,
                 'id': f.id,
-                'owner_name': f.owner.get_full_name,
-                'name': os.path.basename(f.file.file.path),
-                'size': f.file.size,
+                'owner_name': f.owner.get_full_name().title(),
+                'name': f.file.filename(),
+                'size': f.file.file.size,
                 'type': 'file'
             }
             ext = new_f['name'][-4:]

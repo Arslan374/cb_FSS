@@ -100,7 +100,8 @@
                                     class="fas fa-ellipsis-v"></i> </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="{% url 'file' f.pk %}" download>Download</a>
-                                <a class="dropdown-item" href="">Share</a>
+                                <a class="dropdown-item" data-fileid="{{ f.id }}"
+                                 href="#" data-toggle="modal" data-target="#ShareFileModal" >Share</a>
                                 <a class="dropdown-item" href="#">Rename</a>
                                 <a class="dropdown-item" href="#"
                                     data-href="{% url 'file_delete' %}?file-id={{f.id}}&folder-id={{current_folder.id}}"
@@ -186,6 +187,39 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Share File Modal -->
+<div class="modal fade" id="ShareFileModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Share File</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" action="{% url 'share_file' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <input type="hidden" name="file-id" id="shareFileId">
+                        <input type="hidden" name="folder-id" value="{{ current_folder.id }}">
+                        <label for="newUserEmail">User Email:</label>
+                        <input type="email" class="form-control" name="email" id="newUserEmail"
+                            placeholder="user@example.com">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Share</button>
                 </div>
             </form>
         </div>
