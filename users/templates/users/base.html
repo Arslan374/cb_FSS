@@ -63,7 +63,7 @@
     </main>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <!-- Font Awesome JS -->
@@ -82,6 +82,44 @@
             $(this).find('#btn-delete-confirm').attr('href', $(e.relatedTarget).data('href'));
         });
 
+        $('#RenameFileModal').on('show.bs.modal', function(e) {
+            $(this).find('#newName').attr('value', $(e.relatedTarget).data('name'));
+            $(this).find('#fileid').attr('value', $(e.relatedTarget).data('fileid'));
+        });
+
+        $('#RenameFolderModal').on('show.bs.modal', function(e) {
+            $(this).find('#folderName').attr('value', $(e.relatedTarget).data('name'));
+            $(this).find('#folder').attr('value', $(e.relatedTarget).data('folder'));
+        });
+
+        $('#PropertiesModal').on('show.bs.modal', function(e) {
+            $(this).find('#fname').html($(e.relatedTarget).data('name'));
+            $(this).find('#fsize').html($(e.relatedTarget).data('size'));
+            $(this).find('#finfo').html($(e.relatedTarget).data('info'));
+            $(this).find('#fdate').html($(e.relatedTarget).data('date'));
+        
+            
+            var url = "{% url 'share_get' %}?file-id=" + $(e.relatedTarget).data('id');
+            $.getJSON(url, function(data) {
+                var newHtml = "";
+                for (var i in data){
+                    var newRL = "{% url 'share_remove' %}?file-id=" + data[i]["id"];
+                    newHtml += '<div class="row">';
+                    newHtml += '<div class="col-sm">';
+                    newHtml +=   data[i]["email"];
+                    newHtml += '</div>';
+                    newHtml += ' <div class="col-sm">';
+                    newHtml += '  <a href="' + newRL + '">Remove</a>';
+                    newHtml += '</div></div>';
+                }
+                if (data.length > 0){
+                var Ttag = document.getElementById('shareNewData');
+                Ttag.innerHTML = newHtml;
+                }
+                });
+            
+            
+        });
         $('#ShareFileModal').on('show.bs.modal', function(e) {
             $(this).find('#shareFileId').attr('value', $(e.relatedTarget).data('fileid'));
         });

@@ -65,8 +65,9 @@
 
 <!-- Rename Folder Link -->
                                 <a class="dropdown-item" href="#"
-                                    data-href="{% url 'folder_delete' %}?folder={{d.id}}&folder-id={{current_folder.id}}"
-                                    data-toggle="modal" data-target="#RenameModal">Rename</a>
+                                    data-folder="{{d.id}}"
+                                    data-name="{{d.name}}"
+                                    data-toggle="modal" data-target="#RenameFolderModal">Rename</a>
 
 
                                 <a class="dropdown-item" href="#"
@@ -110,15 +111,20 @@
                                  href="#" data-toggle="modal" data-target="#ShareFileModal" >Share</a>
  <!-- Rename File Link  -->
                                  <a class="dropdown-item" href="#" 
-                                    data-href="{% url 'folder_delete' %}?folder={{d.id}}&folder-id={{current_folder.id}}"
-                                    data-toggle="modal" data-target="#RenameModal">Rename</a>
+                                    data-fileid="{{f.id}}"
+                                    data-name="{{f.name}}"
+                                    data-toggle="modal" data-target="#RenameFileModal">Rename</a>
                                
                                     <a class="dropdown-item" href="#"
                                     data-href="{% url 'file_delete' %}?file-id={{f.id}}&folder-id={{current_folder.id}}"
                                     data-toggle="modal" data-target="#confirm-delete">Delete</a>
 <!-- Properties modal link -->
                                     <a class="dropdown-item" href="#"
-                                    data-href="{% url 'file_delete' %}?file-id={{f.id}}&folder-id={{current_folder.id}}"
+                                    data-name="{{f.name}}"
+                                    data-size="{{f.size}}"
+                                    data-info="{{f.info}}"
+                                    data-date="{{f.date}}"
+                                    data-id="{{f.id}}"
                                     data-toggle="modal" data-target="#PropertiesModal">Properites</a>
                             </div>
                         </div>
@@ -260,7 +266,7 @@
 </div>
 
 <!-- Rename Modal -->
-<div class="modal fade" id="RenameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+<div class="modal fade" id="RenameFileModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -270,14 +276,48 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post" action="{% url 'folder_create' %}">
+            <form method="post" action="{% url 'file_rename' %}">
                 {% csrf_token %}
                 <div class="modal-body">
 
                     <div class="form-group">
                         <input type="hidden" name="folder-id" value="{{ current_folder.id }}">
+                        <input type="hidden" name="file-id" id="fileid" >
                         <label for="newName">Name:</label>
-                        <input type="text" class="form-control" name="rename" id="newName"
+                        <input type="text" class="form-control" name="name" id="newName"
+                            placeholder="New Name">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Rename</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Rename Modal -->
+<div class="modal fade" id="RenameFolderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Rename </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" action="{% url 'folder_rename' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <input type="hidden" name="folder-id" value="{{ current_folder.id }}">
+                        <input type="hidden" name="folder" id="folder" >
+                        <label for="folderName">Name:</label>
+                        <input type="text" class="form-control" name="name" id="folderName"
                             placeholder="New Name">
                     </div>
 
@@ -307,8 +347,8 @@
                   <div class="col-sm">
                     File Name:
                   </div>
-                  <div class="col-sm">
-                    abc.xyz
+                  <div id="fname" class="col-sm">
+                    
                   </div>
                 </div>
                 
@@ -316,8 +356,8 @@
                   <div class="col-sm">
                     File Size:
                   </div>
-                  <div class="col-sm">
-                    1.23mb
+                  <div  id="fsize" class="col-sm">
+                    
                   </div>
                 </div>
 
@@ -325,8 +365,8 @@
                   <div class="col-sm">
                     File Type:
                   </div>
-                  <div class="col-sm">
-                    PNG
+                  <div  id="finfo" class="col-sm">
+                    
                   </div>
                 </div>
 
@@ -334,8 +374,8 @@
                   <div class="col-sm">
                     Uploded on:
                   </div>
-                  <div class="col-sm">
-                    dd/mm/yyyy
+                  <div  id="fdate" class="col-sm">
+                   
                   </div>
                 </div>
 
@@ -345,13 +385,8 @@
                   </div>
                   
                 </div>
-                <div class="row">
-                  <div class="col-sm">
-                    abc@def.xyz
-                  </div>
-                  <div class="col-sm">
-                    <a href="#">Remove</a>
-                  </div>
+                <div id="shareNewData">
+                    NONE
                 </div>
 
               </div>

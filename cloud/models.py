@@ -16,6 +16,14 @@ def file_path(self, filename):
     return path
 
 
+def sizeof_fmt(num, suffix="B"):
+    for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
+        if abs(num) < 1024.0:
+            return f"{num:3.1f}{unit}{suffix}"
+        num /= 1024.0
+    return f"{num:.1f}Yi{suffix}"
+
+
 class Folder(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -60,6 +68,35 @@ class File(models.Model):
 
     def filename(self):
         return os.path.basename(self.file.name)
+
+    def get_prop(self):
+        path = os.path.join(
+            settings.PRIVATE_STORAGE_ROOT,
+            self.file.name
+        )
+        data = {}
+        data["name"] = self.filename()
+        data["size"] = sizeof_fmt(self.file.size)
+        data["info"] = os.popen(f'file -b "{path}"').read().strip()
+        data["date"] = self.date.strftime("%m/%d/%Y")
+        return data
+
+    def rename(self, name):
+        new_file = os.path.join(
+            os.path.dirname(self.file.name),
+            name)
+        new_path = os.path.join(settings.PRIVATE_STORAGE_ROOT, new_file)
+        if not os.path.isfile(new_path):
+            os.rename(
+                os.path.join(
+                    settings.PRIVATE_STORAGE_ROOT,
+                    self.file.name
+                ),
+                new_path)
+            self.file.name = new_file
+            self.save()
+            return True
+        return False
 
     def delete(self, *args, **kwargs):
         if os.path.isfile(self.file.path):

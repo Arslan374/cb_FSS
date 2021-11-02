@@ -1,5 +1,8 @@
 import os
 import time
+from django.http import response
+
+from django.http.response import JsonResponse
 from users import views
 from django.contrib import messages
 from django.forms.models import model_to_dict
@@ -47,13 +50,13 @@ def drive(request):
             folders_list.append(f)
     if files.exists():
         for f in files:
-            new_f = {
+
+            new_f = f.get_prop()
+            new_f.update({
                 'pk': f.pk,
                 'id': f.id,
-                'name': os.path.basename(f.file.path),
-                'size': f.file.size,
                 'type': 'file'
-            }
+            })
             ext = new_f['name'][-4:]
             if ext in ['.png', '.tif', 'tiff', '.jpg', 'jpeg', '.bmp']:
                 new_f['type'] = 'image'
@@ -182,6 +185,27 @@ def file_delete(request):
 
 
 @login_required
+def file_rename(request):
+    r_id = 0
+    if request.method == 'POST':
+        file_id = int(request.POST.get('file-id'))
+        r_id = int(request.POST.get('folder-id'))
+        get_name = request.POST.get('name')
+
+        f = File.objects.filter(user=request.user, id=file_id)
+        if f.exists():
+            f = f.first()
+            if f.rename(get_name):
+                messages.success(
+                    request, f"File [{get_name}] renamed successfully!")
+            else:
+                messages.error(
+                    request, f"File [{get_name}] already exists!")
+
+    return redirect(f'/drive/?id={r_id}')
+
+
+@login_required
 def folder_delete(request):
     r_id = 0
     if request.method == 'GET':
@@ -196,6 +220,24 @@ def folder_delete(request):
             folder.delete()
             messages.success(
                 request, f"Folder [{name}] deleted successfully!")
+
+    return redirect(f'/drive/?id={r_id}')
+
+
+@login_required
+def folder_rename(request):
+    r_id = 0
+    if request.method == 'POST':
+        folder = int(request.POST.get('folder'))
+        r_id = int(request.POST.get('folder-id'))
+        get_name = request.POST.get('name')
+        folder = Folder.objects.filter(user=request.user, id=folder)
+        if folder.exists():
+            folder = folder.first()
+            folder.name = get_name
+            folder.save()
+            messages.success(
+                request, f"Folder [{get_name}] renamed successfully!")
 
     return redirect(f'/drive/?id={r_id}')
 
@@ -243,7 +285,22 @@ def share_remove(request):
             messages.success(
                 request, f"Shared File [{name}] remove successfully!")
 
-    return redirect(f'/share/')
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required
+def share_get(request):
+    if request.method == 'GET':
+        file_id = int(request.GET.get('file-id'))
+        sfiles = []
+        for sfile in ShareFile.objects.filter(file__id=file_id, owner=request.user):
+            sfiles.append({
+                "email": sfile.viewer.email,
+                "id": sfile.id
+
+            })
+        return JsonResponse(sfiles,  safe=False)
+    return redirect(f'/')
 
 
 @login_required
