@@ -116,6 +116,10 @@
                                     <a class="dropdown-item" href="#"
                                     data-href="{% url 'file_delete' %}?file-id={{f.id}}&folder-id={{current_folder.id}}"
                                     data-toggle="modal" data-target="#confirm-delete">Delete</a>
+<!-- Properties modal link -->
+                                    <a class="dropdown-item" href="#"
+                                    data-href="{% url 'file_delete' %}?file-id={{f.id}}&folder-id={{current_folder.id}}"
+                                    data-toggle="modal" data-target="#PropertiesModal">Properites</a>
                             </div>
                         </div>
                     </div>
@@ -261,7 +265,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">RENAME </h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Rename </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -272,7 +276,7 @@
 
                     <div class="form-group">
                         <input type="hidden" name="folder-id" value="{{ current_folder.id }}">
-                        
+                        <label for="newName">Name:</label>
                         <input type="text" class="form-control" name="rename" id="newName"
                             placeholder="New Name">
                     </div>
@@ -280,12 +284,86 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">Rename</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<!-- Properties modal -->
+<div class="modal" tabindex="-1" id="PropertiesModal" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Properties</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="container">
+                <div class="row">
+                  <div class="col-sm">
+                    File Name:
+                  </div>
+                  <div class="col-sm">
+                    abc.xyz
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-sm">
+                    File Size:
+                  </div>
+                  <div class="col-sm">
+                    1.23mb
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm">
+                    File Type:
+                  </div>
+                  <div class="col-sm">
+                    PNG
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm">
+                    Uploded on:
+                  </div>
+                  <div class="col-sm">
+                    dd/mm/yyyy
+                  </div>
+                </div>
+
+                <div class="row mt-3 md-1">
+                  <div class="col-sm">
+                    <strong>Shared with:</strong>
+                  </div>
+                  
+                </div>
+                <div class="row">
+                  <div class="col-sm">
+                    abc@def.xyz
+                  </div>
+                  <div class="col-sm">
+                    <a href="#">Remove</a>
+                  </div>
+                </div>
+
+              </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 
 </div>
 

@@ -1,25 +1,43 @@
 {% extends "users/base.html" %} {% block title %}Home{% endblock %} {% block content %} {% load static %}
-<div class="container-fluid">
-    <div class="table-responsive col-auto" style="padding-bottom: 1rem;">
 
-
-
-        <!-- Drive Div  -->
-        <div class="card">
-            <div class="card-header text-center">
-                <h3>My Drive</h3>
-            </div>
 
             <div class="text-center">
-                {% if user.is_authenticated %}
-                <h3>Hi {{ name }},</h3>
-                {% endif %}
-                <p>
-                <h1>Welcome to Cloud Based File Sharing System</h1>
-                </p>
+                <div class="container">
+                    <div class="row justify-content-md-center mb-3" style="background-color: white;">
+                      <div class="col d-flex">
+                          <h1 class="display-4 m-auto">Upload your Files</h1>
+                        
+                      </div>
+                      <div class="col">
+                        <img src="{% static '/img/home_uploading.png' %}" width="150rem">
+                      </div>
+                    </div>
+                    <div class="row justify-content-md-center mb-3" style="background-color: white;">
+                      <div class="col">
+                        <img src="{% static '/img/home_folder.png' %}" width="150rem">
+                      </div>
+                      <div class="col d-flex">
+                        <h1 class="display-4 m-auto">Manage them in folders</h1>
+                      </div>
+                      </div>
+
+                    <div class="row justify-content-md-center mb-3" style="background-color: white;">
+                      <div class="col d-flex">
+                        <h1 class="display-4 m-auto">Share them with others</h1>
+                      </div>
+                      <div class="col">
+                        <img src="{% static '/img/home_share.png' %}" width="150rem">
+                      </div>
+                    </div>
+                    <div class="row justify-content-md-center mb-3" style="background-color: white;">
+                      <div class="col">
+                        <img src="{% static '/img/home_sync.png' %}"  width="250rem">
+                      </div>
+                      <div class="col d-flex">
+                        <h1 class="display-4 m-auto">Avail them anywhere</h1>
+                      </div>
+                    </div>
+                  </div>
             </div>
 
-        </div>
-
-    </div>
     {% endblock content %}
